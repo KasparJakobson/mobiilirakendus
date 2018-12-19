@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Muusikud</title>
+    <script src="https://unpkg.com/vue@2.5.17/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css"/>
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <link rel="stylesheet" href="css/css.css">
+</head>
+<body>
+<div id="app">
+
+    <div data-role="page" id="login" data-fullscreen="true">
+        <div class="grad" data-role="header" data-position="fixed">
+            <h1 class="header-text">Logi sisse</h1>
+        </div>
+
+        <div data-role="content">
+            <label for="username"></label>
+            <input type="text" id="username" v-model="userdata.username">
+
+            <label for="password"></label>
+            <input type="password" id="password" v-model="userdata.password">
+
+            <button @click="login">Logi sisse</button>
+
+            <h3 v-if="userdata.login_error !== null" class="login-error">{{userdata.error}}</h3>
+        </div>
+    </div>
+
+
+    <div data-role="page" id="tab1" data-fullscreen="true">
+        <div class="grad" data-role="header" data-position="fixed">
+            <a data-iconpos="left" data-icon="back" data-rel="back">Tagasi</a>
+            <h1 class="header-text">Muusikud</h1>
+            <a v-if="userdata.logged_in === 1" href="#login" data-iconpos="right">Logi välja</a>
+            <a v-else href="#login" data-iconpos="right">Logi sisse</a>
+            <div data-role="navbar" data-iconpos="bottom">
+                <ul>
+                    <li><a @click="get_top_musicians">TOP</a></li>
+                    <li v-if="userdata.logged_in === 1"><a href="#tab2">Lemmikud</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div data-role="content">
+
+            <label for="search">Otsi muusikuid</label>
+            <input type="text" id="search" v-model="search_term">
+            <button @click="search_fn">Otsi</button>
+
+            <h2 class="top-heading" v-if="has_searched === 0">TOP muusikud</h2>
+
+            <ul v-for="musician in search">
+                <li>
+                    <a href="#view" @click="view_musician(musician.musician_id)">{{musician.musician_name}}</a>
+                    <img class="search-img" v-bind:src="musician.musician_img" alt="">
+
+                    <button v-if="userdata.logged_in === 1 && favourite_ids.indexOf(musician.musician_id) === -1"
+                            @click="add_favourite_musician(musician.musician_id)">Lisa
+                    </button>
+                    <button v-else-if="userdata.logged_in === 1"
+                            @click="remove_favourite_musician(musician.musician_id)">Eemalda
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <div data-role="footer" data-position="fixed">
+            <h1>Footer</h1>
+        </div>
+    </div>
+
+    <div data-role="page" id="tab2" data-fullscreen="true">
+        <div class="grad" data-role="header" data-position="fixed">
+            <a data-iconpos="left" data-icon="back" data-rel="back">Tagasi</a>
+            <h1 class="header-text">Muusikud</h1>
+            <a v-if="userdata.logged_in === 1" href="#login" data-iconpos="right" @click="logout">Logi välja</a>
+            <a v-else href="#login" data-iconpos="right">Logi sisse</a>
+            <div data-role="navbar" data-iconpos="bottom">
+                <ul>
+                    <li><a href="#tab1">Otsing</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div data-role="content">
+            <ul v-for="musician in favourites">
+                <li>
+                    <a href="#view" @click="view_musician(musician.musician_id)">{{musician.musician_name}}</a>
+                    <img class="search-img" v-bind:src="musician.musician_img" alt="">
+
+                    <button v-if="userdata.logged_in === 1 && favourite_ids.indexOf(musician.musician_id) === -1"
+                            @click="add_favourite_musician(musician.musician_id)">Lisa
+                    </button>
+
+                    <button v-else-if="userdata.logged_in === 1"
+                            @click="remove_favourite_musician(musician.musician_id)">Eemalda
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <div data-role="footer" data-position="fixed">
+            <h1>Footer</h1>
+        </div>
+    </div>
+
+    <div data-role="page" id="view" data-fullscreen="true">
+        <div class="grad" data-role="header" data-position="fixed">
+            <a data-iconpos="left" data-icon="back" data-rel="back">Tagasi</a>
+            <h1 class="header-text">Muusikud</h1>
+            <a v-if="userdata.logged_in === 1" href="#login" data-iconpos="right" @click="logout">Logi välja</a>
+            <a v-else href="#login" data-iconpos="right">Logi sisse</a>
+        </div>
+
+        <div data-role="content">
+            <h1>{{view.name}}</h1>
+            <img class="view-img" v-bind:src="view.img" alt="">
+            <p>{{view.desc}}</p>
+        </div>
+
+        <div data-role="footer" data-position="fixed">
+            <h1>Footer</h1>
+        </div>
+    </div>
+
+
+</div>
+<script src="js/vue.js"></script>
+</body>
+</html>

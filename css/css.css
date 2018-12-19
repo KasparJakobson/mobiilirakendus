@@ -1,0 +1,21 @@
+.view-img {
+    width: 200px;
+    height: auto;
+}
+
+.search-img {
+    width: 50px;
+    height: auto;
+}
+
+ul {
+    list-style-type: none;
+}
+
+.login-error {
+    color: red;
+}
+
+.top-heading {
+    align-content: center;
+}
